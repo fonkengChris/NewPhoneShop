@@ -1,0 +1,78 @@
+﻿@using NewPhoneShop2.Models
+
+@model Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}  
+        
+    <div class="row">
+        <div class="col-md-12 offset-2">        
+            <div class="col-md-4 col-xs-6 border-primary mb-3">
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-12">
+                            <div class="card-header text-white bg-info">
+                                <p class="card-text">
+                                    <h5 class="card-title">
+                                         @Model.Name
+                                     </h5>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        
+                            <div class="col-md-4">
+                                <img src="@Model.ProfilePictureURL" width="100%" alt="@Model.Name">
+                            </div>
+                        
+                        
+                        
+                            <div class="col-md-8">
+                                <div class="card-body">            
+                                    <p class="card-text"><b>Category: </b>@Model.Category</p>
+                                    <p class="card-text"><b>Name: </b>@Model.Name</p>
+                                    <p class="card-text"><b>Brand Name: </b>@Model.BrandName</p>
+                                    <p class="card-text"><b>Properties: </b>@Model.Properties</p>
+                                    <p class="card-text"><b>Price: </b>@Model.Price.ToString("c")</p>
+                                </div>
+                            </div>
+                      
+                        
+                        <div class="col-md-12">
+                            <div class="card-footer ">
+                                <p class="card-text">
+                                    <a class="btn btn-outline-primary float-right" asp-action="Index">
+                                         Back to list
+                                    </a>
+                                    <a asp-controller="Orders" 
+                                       asp-action="AddItemToShoppingCart" 
+                                       asp-route-id="@Model.Id"
+                                        class="btn btn-success text-white">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart (Price @Model.Price.ToString("c"))</a>
+                                </p>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>               
+ 
+                
+                
+            
+        
+ 
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            var output = document.getElementById("ProfilePicturePreview");
+            output.src = $("#ProfilePictureURL").val();
+        })
+
+    </script>
+}
