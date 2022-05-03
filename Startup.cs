@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using NewPhoneShop2.Data;
 using NewPhoneShop2.Data.Cart;
 using NewPhoneShop2.Data.Services;
+using NewPhoneShop2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +42,16 @@ namespace NewPhoneShop2
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 
+            //Configuration of Authentication and Authorisation
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddMemoryCache();
             services.AddSession();
+            services.AddAuthentication(options => 
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;                
+            });
+            
+            
             services.AddControllersWithViews();
         }
 
@@ -61,6 +73,12 @@ namespace NewPhoneShop2
 
             app.UseRouting();
             app.UseSession();
+
+            //authentication and authorisation
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+             
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -72,6 +90,7 @@ namespace NewPhoneShop2
 
             //seeding database
             AppDbInitializer.Seed(app);
+            AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
         }
     }
 }
