@@ -59,7 +59,7 @@ namespace NewPhoneShop2.Data
 
                 //Users Configuration
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                string adminUserEmail = "admin@luxurious_info.com";
+                string adminUserEmail = "admin@phoneshop.com";
 
                 var adminUser = await userManager.FindByNameAsync(adminUserEmail);
                 if (adminUser == null)
@@ -71,11 +71,11 @@ namespace NewPhoneShop2.Data
                         Email = adminUserEmail,
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newAdminUser, "Coding@1234?");
+                    await userManager.CreateAsync(newAdminUser, "@Pass4wd");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
-                string appUserEmail = "customer@luxurious_info.com";
+                string appUserEmail = "customer@phoneshop.com";
 
                 var appUser = await userManager.FindByNameAsync(appUserEmail);
                 if (appUser == null)
@@ -87,8 +87,11 @@ namespace NewPhoneShop2.Data
                         Email = appUserEmail,
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newAppUser, "Coding@1234?");
+                    
+
+                    await userManager.CreateAsync(newAppUser, "@Pass4wd");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Customer);
+                    
                 }
             }
         }

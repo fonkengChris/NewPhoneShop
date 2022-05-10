@@ -5,10 +5,12 @@ using NewPhoneShop2.Data;
 using NewPhoneShop2.Data.Services;
 using System.Threading.Tasks;
 using System.Linq;
-
+using Microsoft.AspNetCore.Authorization;
+using NewPhoneShop2.Data.Static;
 
 namespace NewPhoneShop2.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     public class ProductsController : Controller
     {
         private readonly IProductsService _service;
@@ -17,12 +19,14 @@ namespace NewPhoneShop2.Controllers
         {
             _service = service;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var allProducts = await _service.GetAllAsync();
             return View(allProducts);
         }
-
+        
+        [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
             var allProducts = await _service.GetAllAsync();
@@ -65,6 +69,8 @@ namespace NewPhoneShop2.Controllers
         }
 
         //Get: Product/Details/1    
+        [AllowAnonymous]
+
         public async Task<IActionResult> Details(int id)
         {
             var productDetail = await _service.GetByIdAsync(id);

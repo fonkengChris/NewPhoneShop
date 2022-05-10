@@ -4,7 +4,8 @@
     {
         Phone = 1,
         Tablet,
-        Headset,
-        Charger
+        Headphone,
+        Charger,
+        Earpiece
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NewPhoneShop2.Data;
 using NewPhoneShop2.Data.Static;
 using NewPhoneShop2.Data.ViewModels;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace NewPhoneShop2.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -19,6 +22,11 @@ namespace NewPhoneShop2.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+        }
+        public async Task<IActionResult> Users() 
+        {
+            var users = await _context.Users.ToListAsync();
+            return View(users);
         }
         public IActionResult Login() => View(new LoginVM());
 
@@ -62,21 +70,22 @@ namespace NewPhoneShop2.Controllers
                 return View(registerVM);
 
             }
-
-            var newUser = new ApplicationUser()
+            else
             {
-                FullName = registerVM.FullName,
-                Email = registerVM.EmailAddress,
-                UserName = registerVM.EmailAddress
-            };
+                var newUser = new ApplicationUser()
+                {
+                    FullName = registerVM.FullName,
+                    Email = registerVM.EmailAddress,
+                    UserName = registerVM.FullName
+                };
 
-            var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
-            if (newUserResponse.Succeeded)
-                await _userManager.AddToRoleAsync(newUser, UserRoles.Customer);
+                var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
+                if (newUserResponse.Succeeded)
+                    await _userManager.AddToRoleAsync(newUser, UserRoles.Customer);
 
-
-
-            return View("RegisterCompleted");
+                return View("RegisterCompleted");
+            }
+            
         }
 
         [HttpPost]
@@ -84,6 +93,11 @@ namespace NewPhoneShop2.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Products");
+        }
+
+        public IActionResult AccessDenied(string ReturnURL)
+        {
+            return View();
         }
     }
 

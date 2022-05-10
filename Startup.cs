@@ -91,6 +91,7 @@ namespace NewPhoneShop2
             //seeding database
             AppDbInitializer.Seed(app);
             AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
+
         }
     }
 }

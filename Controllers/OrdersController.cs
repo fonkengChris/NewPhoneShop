@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NewPhoneShop2.Data.Cart;
 using NewPhoneShop2.Data.Services;
+using NewPhoneShop2.Data.Static;
 using NewPhoneShop2.Data.ViewModels;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace NewPhoneShop2.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly IProductsService _productsService;
@@ -21,9 +25,10 @@ namespace NewPhoneShop2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string userId = "";
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
 
-            var orders = await _ordersServive.GetOrdersByIdAsync(userId);
+            var orders = await _ordersServive.GetOrdersByIdAndRoleAsync(userId, userRole);
             return View(orders);
         }
         public IActionResult ShoppingCart()
@@ -64,8 +69,8 @@ namespace NewPhoneShop2.Controllers
         public async Task<IActionResult> CompleteOrder()
         {
             var items = _shoppingCart.GetShoppingCartItems();
-            string userId = "";
-            string userEmailAddres = "";
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userEmailAddres = User.FindFirstValue(ClaimTypes.Email);
 
             await _ordersServive.StoreOrderAsync(items, userId, userEmailAddres);
             await _shoppingCart.ClearShoppingCartAsync();
